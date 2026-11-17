@@ -26,7 +26,7 @@
       <div class="code" id="code"></div>
       <a class="button" id="open" href="#">Open in My Recipes</a>
       <p id="missing" class="hidden">The app didn't open. Install My Recipes first, then tap the button again, or enter the code above under Friends in the app.</p>
-      <p>Sign in with the email address your friend invited, then accept.</p>
+      <p>Sign in or create an account, then accept.</p>
     </div>
     <p id="invalid" class="hidden">This invitation link is incomplete. Ask your friend to send it again.</p>
   </main>
@@ -34,8 +34,8 @@
     (function () {
       var params = new URLSearchParams(location.search);
       var raw = (params.get('c') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1');
-      if (!/^[0-9A-HJKMNP-TV-Z]{8}$/.test(raw)) { document.getElementById('invalid').className = ''; return; }
-      var code = raw.slice(0, 4) + '-' + raw.slice(4);
+      if (!/^[0-9A-HJKMNP-TV-Z]{10}$/.test(raw)) { document.getElementById('invalid').className = ''; return; }
+      var code = raw.slice(0, 5) + '-' + raw.slice(5);
       var path = 'friends/accept?code=' + encodeURIComponent(code);
       var link = 'myrecipes://' + path;
       if (/android/i.test(navigator.userAgent)) {
