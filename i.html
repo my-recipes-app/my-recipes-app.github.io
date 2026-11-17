@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex">
+  <title>My Recipes invitation</title>
+  <meta property="og:title" content="You're invited to My Recipes">
+  <meta property="og:description" content="Tap to accept the invitation and share recipes with your friend.">
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #F8F6F0; color: #2B2620; }
+    main { max-width: 420px; margin: 0 auto; padding: 48px 24px; text-align: center; }
+    h1 { font-size: 24px; margin: 0 0 12px; }
+    p { line-height: 1.5; color: #6B6258; }
+    .code { font: 600 28px ui-monospace, monospace; letter-spacing: 3px; margin: 24px 0; color: #2B2620; }
+    a.button { display: block; padding: 16px; border-radius: 12px; background: #BF6944; color: #fff; font-weight: 600; text-decoration: none; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>You're invited to My Recipes</h1>
+    <div id="invite" class="hidden">
+      <p>Your friend wants to share recipes with you.</p>
+      <div class="code" id="code"></div>
+      <a class="button" id="open" href="#">Open in My Recipes</a>
+      <p id="missing" class="hidden">The app didn't open. Install My Recipes first, then tap the button again, or enter the code above under Friends in the app.</p>
+      <p>Sign in with the email address your friend invited, then accept.</p>
+    </div>
+    <p id="invalid" class="hidden">This invitation link is incomplete. Ask your friend to send it again.</p>
+  </main>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var raw = (params.get('c') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1');
+      if (!/^[0-9A-HJKMNP-TV-Z]{8}$/.test(raw)) { document.getElementById('invalid').className = ''; return; }
+      var code = raw.slice(0, 4) + '-' + raw.slice(4);
+      var path = 'friends/accept?code=' + encodeURIComponent(code);
+      var link = 'myrecipes://' + path;
+      if (/android/i.test(navigator.userAgent)) {
+        var fallback = location.origin + location.pathname + '?c=' + encodeURIComponent(code) + '&missing=1';
+        link = 'intent://' + path + '#Intent;scheme=myrecipes;package=nl.loeksteenhoff.myrecipes;S.browser_fallback_url=' + encodeURIComponent(fallback) + ';end';
+      }
+      document.getElementById('code').textContent = code;
+      document.getElementById('open').href = link;
+      document.getElementById('invite').className = '';
+      if (params.get('missing')) document.getElementById('missing').className = '';
+      else location.replace(link);
+    })();
+  </script>
+</body>
+</html>
